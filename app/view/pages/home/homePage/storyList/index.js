@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList } from 'react-native'
-
+import { View, Image, Text, StyleSheet, FlatList } from 'react-native'
 import StoryItem from './StoryItem'
 
 const data = [{

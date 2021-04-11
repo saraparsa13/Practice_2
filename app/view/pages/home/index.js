@@ -1,11 +1,22 @@
 import React, { useState } from 'react'
-import { BottomNavigation } from 'react-native-paper'
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from 'react-native'
+
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { BottomNavigation, Text } from 'react-native-paper'
 
 import HomePage from './homePage/index'
+import SearchPage from './searchPage'
 
 const HomeRoute = () => <HomePage />
 
-const SearchRoute = () => null
+const SearchRoute = () => <SearchPage />
 
 const AddPostRoute = () => null
 
@@ -16,8 +27,8 @@ const ProfileRoute = () => null
 const App = () => {
   const [index, setIndex] = useState(0)
   const [routes] = React.useState([
-    { key: 'home', icon: 'home-variant' },
     { key: 'search', icon: 'magnify' },
+    { key: 'home', icon: 'home-variant' },
     { key: 'addpost', icon: 'plus-box-outline' },
     { key: 'favorite', icon: 'heart-outline' },
     { key: 'profile', icon: 'account' },

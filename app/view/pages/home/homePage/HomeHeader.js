@@ -1,6 +1,6 @@
 import React from 'react'
-import { Text, View, StyleSheet } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Feather'
+import { Text, View, StyleSheet } from 'react-native'
 
 function HomeHeader() {
 	return (

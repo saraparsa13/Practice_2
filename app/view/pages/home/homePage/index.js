@@ -1,8 +1,7 @@
 import React from 'react'
 import { FlatList, StyleSheet } from 'react-native'
-
 import HomeHeader from './HomeHeader'
-import StoryList from './StoryList'
+import StoryList from './storyList/index'
 import PostItem from './PostItem'
 
 const data = [ 
