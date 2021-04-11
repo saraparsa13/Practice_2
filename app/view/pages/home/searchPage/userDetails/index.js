@@ -50,6 +50,7 @@ function UserDetails() {
           data={DATA}
           horizontal
           showsHorizontalScrollIndicator={false} 
+          keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <HighlightedStoryItem
               avatar={item.avatar}

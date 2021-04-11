@@ -2,12 +2,12 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { Appbar } from 'react-native-paper';
 
-function NavigationBar() {
+function NavigationBar({ onAllPostsPress, onIgtvPress, onTaggedPosts }) {
   return (
     <Appbar.Header style={styles.sectionHeader}>
-      <Appbar.Action icon="border-all" size={35}/>
-      <Appbar.Action icon="video-vintage" size={35}/>
-      <Appbar.Action icon="account-box-outline" size={35}/>
+      <Appbar.Action onPress={onAllPostsPress} icon="border-all" size={35}/>
+      <Appbar.Action onPress={onIgtvPress} icon="video-vintage" size={35}/>
+      <Appbar.Action onPress={onTaggedPosts} icon="account-box-outline" size={35}/>
     </Appbar.Header>
   )
 }

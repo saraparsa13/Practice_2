@@ -13,7 +13,9 @@ function PostItem({ postUrl }) {
 const styles = StyleSheet.create({
   sectionImage: {
     width: 180,
-    height: 180
+    height: 180,
+    borderWidth: StyleSheet.hairlineWidth,
+		borderColor: 'white'
   }
 })
 

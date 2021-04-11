@@ -40,6 +40,7 @@ const StoryList = () => {
 			showsHorizontalScrollIndicator={false}
 			style={styles.sectionFlatList}
 			data={data}
+			keyExtractor={item => item.key}
 			renderItem={({ item }) => (
 				<StoryItem
 					username={item.username}
