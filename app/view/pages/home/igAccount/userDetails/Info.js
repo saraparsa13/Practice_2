@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Image, View, Text, Linking } from 'react-native'
+import { StyleSheet, Image, View, Text, Linking, TouchableOpacity } from 'react-native'
 import { Appbar } from 'react-native-paper';
 
 function Info() {
@@ -33,6 +33,25 @@ function Info() {
 					</Text>
 				</View>
 			</View>
+			<View style={styles.sectionButtonsContainer}>
+				<TouchableOpacity
+					style={styles.sectionButton}
+				>
+					<Text style={styles.sectionButtonText}>Following</Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity
+					style={styles.sectionButton}
+				>
+					<Text style={styles.sectionButtonText}>Message</Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity
+					style={styles.sectionButton}
+				>
+					<Text style={styles.sectionButtonText}>Email</Text>
+				</TouchableOpacity>
+			</View>
 		</View>
 	)
 }
@@ -40,6 +59,8 @@ function Info() {
 const styles = StyleSheet.create({
 	sectionContainer: {
 		backgroundColor: '#f5f5f5',
+		display: 'flex',
+		flexDirection: 'column'
 	},
 	sectionHeader: {
 		height: 140,
@@ -95,7 +116,28 @@ const styles = StyleSheet.create({
 		fontSize: 15,
 		lineHeight: 23,
 		color: '#2f2f2f'
-	}
+	},
+	sectionButtonsContainer: {
+    height: 50,
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'space-around',
+  },
+  sectionButton: {
+    backgroundColor: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 150,
+    borderRadius: 6,
+    borderWidth: StyleSheet.hairlineWidth,
+		borderColor: 'lightgray'
+  },
+  sectionButtonText: {
+    fontWeight: 'bold',
+    fontSize: 16
+  }
 })
 
 export default Info

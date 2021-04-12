@@ -12,11 +12,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { BottomNavigation, Text } from 'react-native-paper'
 
 import HomePage from './homePage/index'
-import SearchPage from './searchPage'
+import IgAccount from './igAccount'
 
 const HomeRoute = () => <HomePage />
 
-const SearchRoute = () => <SearchPage />
+const SearchRoute = () => <IgAccount />
 
 const AddPostRoute = () => null
 
