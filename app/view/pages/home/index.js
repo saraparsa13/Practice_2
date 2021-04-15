@@ -13,6 +13,7 @@ import { BottomNavigation, Text } from 'react-native-paper'
 
 import HomePage from './homePage/index'
 import IgAccount from './igAccount'
+import RegisterPage from './ResgiterPage'
 
 const HomeRoute = () => <HomePage />
 
@@ -25,10 +26,11 @@ const FavoriteRoute = () => null
 const ProfileRoute = () => null
 
 const App = () => {
+  const [isAuthorized, setIsAuthorized] = useState(false)
   const [index, setIndex] = useState(0)
   const [routes] = React.useState([
-    { key: 'search', icon: 'magnify' },
     { key: 'home', icon: 'home-variant' },
+    { key: 'search', icon: 'magnify' },
     { key: 'addpost', icon: 'plus-box-outline' },
     { key: 'favorite', icon: 'heart-outline' },
     { key: 'profile', icon: 'account' },
@@ -44,13 +46,15 @@ const App = () => {
 
 
   return (
-    <BottomNavigation
-      shifting={false}
-      barStyle={{ backgroundColor: '#fff', height: 60 }}
-      navigationState={{ index, routes }}
-      onIndexChange={setIndex}
-      renderScene={renderScene}
-    />
+    isAuthorized ? (
+      <BottomNavigation
+        shifting={false}
+        barStyle={{ backgroundColor: '#fff', height: 60 }}
+        navigationState={{ index, routes }}
+        onIndexChange={setIndex}
+        renderScene={renderScene}
+      />
+    ) : <RegisterPage />
   )
 }
 
