@@ -36,7 +36,7 @@ function RegisterPage() {
   // }
 
   const search = (searchText) => {
-    
+
     const FILTERED_DATA = DATA.filter((item) => {
       return item.name.includes(searchText) || item.dial_code.includes(searchText)
     })
@@ -73,10 +73,10 @@ function RegisterPage() {
             </View>
             <FlatList
               data={data.filteredData}
-              keyExtractor={item => item.key}
+              keyExtractor={(item, index) => String(index)}
               renderItem={({ item }) =>
                 <Text
-                  // onPress={ }
+                  onPress={() => setDialCode(item.code + ' ' + item.dial_code)}
                   style={styles.sectionFlatListItem}>
                   {item.name + '  ' + '(' + item.dial_code + ')'}
                 </Text>
@@ -171,7 +171,7 @@ function RegisterPage() {
             <Formik
               validateOnMount={true}
               validationSchema={loginValidationSchema}
-              initialValues={{ email: '' }}
+              initialValues={{ phoneNum: '' }}
               onSubmit={values => console.log(values)}>
               {({
                 handleChange,
@@ -207,7 +207,7 @@ function RegisterPage() {
                     disabled={!isValid || values.phoneNum === ''}
                     onPress={handleSubmit}
                     style={!isValid ? styles.disableButton : styles.enableButton}>
-                    <Text style={{ color: 'white', fontSize: 20 }}>Next</Text>
+                    <Text style={styles.sectionButtonTxt}>Next</Text>
                   </TouchableOpacity>
                 </>
               )}
