@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet, FlatList } from 'react-native'
+import { StyleSheet, FlatList } from 'react-native'
 import StoryItem from './StoryItem'
 
 const data = [{
@@ -54,8 +54,8 @@ const StoryList = () => {
 const styles = StyleSheet.create({
 	sectionContainer: {
 		width: 'auto',
-		height: 70,
-		backgroundColor: 'white',
+		height: 110,
+		// backgroundColor: 'white',
 		flexDirection: 'column',
 		alignItems: 'center',
 	},

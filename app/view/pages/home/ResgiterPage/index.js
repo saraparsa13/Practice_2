@@ -6,14 +6,16 @@ import * as yup from 'yup'
 
 import { DATA } from './DialCode'
 
+const phoneNumRegex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/
+
 const loginValidationSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email("Please enter valid email")
-    .required('Email Address is Required'),
+  // email: yup
+  //   .string()
+  //   .email("Please enter valid email")
+  //   .required('Email Address is Required'),
   phoneNum: yup
     .string()
-    .matches(/^[0]?[789]\d{9}$/, 'Phone number is Not valid')
+    .matches(phoneNumRegex, 'Phone number is Not valid')
     .min(8, ({ min }) => `Phone number must be at least ${min} characters`)
     .required('phone number is required'),
 })
@@ -42,7 +44,7 @@ function RegisterPage() {
     })
     setData({ inputText: searchText, filteredData: FILTERED_DATA })
   }
-  console.log(data)
+  // console.log(data)
 
   return (
     <View style={styles.sectionContainer}>
@@ -144,7 +146,7 @@ function RegisterPage() {
                 <>
                   <TextInput
                     name="email"
-                    style={styles.sectionEmailInput}
+                    style={!isValid ?  [styles.sectionEmailInput , {borderColor: 'red', borderWidth: 1}] : styles.sectionEmailInput}
                     placeholderTextColor='#a6a6a6'
                     onChangeText={handleChange('email')}
                     onBlur={handleBlur('email')}
@@ -183,7 +185,7 @@ function RegisterPage() {
                 isValid,
               }) => (
                 <>
-                  <View style={{ display: 'flex', flexDirection: 'row' }}>
+                  <View style={styles.phonenumContainer}>
                     <TouchableOpacity
                       onPress={() => setModalVisible(true)}
                       style={styles.sectionDialCode}>
@@ -191,7 +193,7 @@ function RegisterPage() {
                     </TouchableOpacity>
                     <TextInput
                       name="phoneNum"
-                      style={styles.sectionPhoneNumInput}
+                      style = {[styles.sectionPhoneNumInput , !isValid && {borderColor: 'red', borderWidth: 1}] }
                       placeholderTextColor='#a6a6a6'
                       onChangeText={handleChange('phoneNum')}
                       onBlur={handleBlur('phoneNum')}
@@ -200,7 +202,7 @@ function RegisterPage() {
                       keyboardType="numeric"
                     />
                   </View>
-                  {(errors.phoneNum && touched.phoneNum) &&
+                  {(errors.phoneNum) &&
                     <Text style={styles.sectionErrorMsg}>{errors.phoneNum}</Text>
                   }
                   <TouchableOpacity
@@ -399,6 +401,10 @@ const styles = StyleSheet.create({
   sectionFlatListItem: {
     color: 'white',
     fontSize: 20
+  },
+  phonenumContainer: {
+    display: 'flex',
+    flexDirection: 'row'
   }
 })
 

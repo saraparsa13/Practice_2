@@ -8,13 +8,13 @@ function HomeHeader() {
 			<Text style={styles.sectionTitle}>Instagram</Text>
 			<View style={styles.sectionIcons}>
 				<Ionicons name="plus-square"
-					size={23} color="black"
+					size={30} color="black"
 					style={styles.sectionIcon} />
 				<Ionicons name="heart"
-					size={23} color="black"
+					size={30} color="black"
 					style={styles.sectionIcon} />
 				<Ionicons name="message-circle"
-					size={23} color="black"
+					size={30} color="black"
 					style={{ margin: 5 }} />
 			</View>
 		</View>
@@ -24,13 +24,12 @@ function HomeHeader() {
 const styles = StyleSheet.create({
 	sectionContainer: {
 		width: 'auto',
-		backgroundColor: 'white',
 		display: 'flex',
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		alignItems: 'center',
-		height: 40,
-		marginTop: 5
+		height: 70,
+		borderWidth: 0
 	},
 	sectionIcons: {
 		display: 'flex',

@@ -8,15 +8,15 @@ function NavigationBar({ onAllPostsPress, onIgtvPress, onTaggedPostsPress, postT
 	return (
 		<Appbar.Header style={styles.sectionHeader}>
 			<Appbar.Action
-				color={POST_TYPES.POST == postType ? 'red' : 'black'}
+				color={POST_TYPES.POST == postType ? 'blue' : 'black'}
 				onPress={onAllPostsPress} icon="border-all"
 				size={35} />
 			<Appbar.Action
-				color={POST_TYPES.IGTV == postType ? 'red' : 'black'}
+				color={POST_TYPES.IGTV == postType ? 'blue' : 'black'}
 				onPress={onIgtvPress} icon="video-vintage"
 				size={35} />
 			<Appbar.Action
-				color={POST_TYPES.TAGG == postType ? 'red' : 'black'}
+				color={POST_TYPES.TAGG == postType ? 'blue' : 'black'}
 				onPress={onTaggedPostsPress} icon="account-box-outline"
 				size={35} />
 		</Appbar.Header>

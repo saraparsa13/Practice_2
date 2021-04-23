@@ -1,16 +1,21 @@
 import React from 'react'
-import { Button } from 'react-native'
+import { Button, View, Text, TouchableOpacity } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { useNavigation } from '@react-navigation/native'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import HomePage from 'view/pages/home/homePage';
-import IgAccount from 'view/pages/home/igAccount';
+import HomePage from 'view/pages/home/homePage'
+import IgAccount from 'view/pages/home/igAccount'
+import UserProfile from 'view/pages/home/userProfile/index'
+import Archive from 'view/pages/home/userProfile/Archive'
 
 const Stack = createStackNavigator()
 const StackHome = createStackNavigator()
-const StackSearch = createStackNavigator()
-const BottomTab = createBottomTabNavigator();
+const BottomTab = createBottomTabNavigator()
+const StackUserProfile = createBottomTabNavigator()
+const Drawer = createDrawerNavigator();
 
 function HomeStack() {
   return (
@@ -21,17 +26,18 @@ function HomeStack() {
   )
 }
 
-function SearchScreen() {
-  const navigation = useNavigation();
-  return <Button title='press' onPress={() => navigation.navigate('IGAccount')} />
-}
+// function SearchScreen() {
+//   const navigation = useNavigation()
+//   return <Button title='press' onPress={() => navigation.navigate('IGAccount')} />
+// }
 
 function SearchStack() {
   return (
-    <StackSearch.Navigator headerMode='none'>
-      <StackSearch.Screen name='SearchScreen' component={SearchScreen} />
-      <StackSearch.Screen name='IGAccount' component={IgAccount} />
-    </StackSearch.Navigator>
+    null
+    // <StackSearch.Navigator headerMode='none'>
+    //   <StackSearch.Screen name='SearchScreen' component={SearchScreen} />
+    //   <StackSearch.Screen name='IGAccount' component={IgAccount} />
+    // </StackSearch.Navigator>
   )
 }
 
@@ -41,13 +47,105 @@ function ActivityStack() {
   )
 }
 
+function DrawerContent() {
+  const navigation = useNavigation()
+  return (
+    <>
+      <TouchableOpacity
+        style={{ marginVertical: 20, marginHorizontal: 10 }}
+        onPress={() => navigation.navigate('Archive')}>
+        <Text style={{ fontSize: 22 }}>Archive</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ marginVertical: 20, marginHorizontal: 10 }}
+        onPress={() => navigation.navigate('Archive')}>
+        <Text style={{ fontSize: 22 }}>Saved</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ marginVertical: 20, marginHorizontal: 10 }}
+        onPress={() => navigation.navigate('Archive')}>
+        <Text style={{ fontSize: 22 }}>YourActivity</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ marginVertical: 20, marginHorizontal: 10 }}
+        onPress={() => navigation.navigate('Archive')}>
+        <Text style={{ fontSize: 22 }}>Close Friends</Text>
+      </TouchableOpacity>
+    </>
+  );
+}
+
+function UserProfileStack() {
+  return (
+    <Drawer.Navigator
+      headerMode='none'
+      drawerPosition='right'
+      drawerType='back'
+      drawerStyle={{
+        width: 280,
+      }}
+      drawerContent={() => <DrawerContent />}>
+      <Drawer.Screen  name="Home" component={UserProfile} />
+    </Drawer.Navigator>
+  );
+}
+
 function HomeBottomTab() {
   return (
-    <BottomTab.Navigator headerMode='none'>
-      <BottomTab.Screen name='HomeStack' component={HomeStack} />
-      <BottomTab.Screen name='SearchStack' component={SearchStack} />
-      <BottomTab.Screen name='ActivityStack' component={ActivityStack} />
-      {/* <BottomTab.Screen name='UserProfileStack' component={UserProfileStack} /> */}
+    <BottomTab.Navigator
+      headerMode='none'
+      tabBarOptions={{
+        activeTintColor: 'black',
+        showIcon: true,
+        showLabel: false,
+        tabStyle: {
+          height: 50,
+        },
+        indicatorStyle: {
+          backgroundColor: 'black'
+        }
+      }}
+      headerMode='none'>
+      <BottomTab.Screen
+        options={{
+          tabBarLabel: 'Home',
+          backgroundColor: 'red',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home-outline" color={color} size={35} />
+          ),
+        }}
+        name='HomeStack'
+        component={HomeStack} />
+      <BottomTab.Screen
+        options={{
+          tabBarLabel: 'Search',
+          backgroundColor: 'red',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="magnify" color={color} size={35} />
+          ),
+        }}
+        name='SearchStack'
+        component={SearchStack} />
+      <BottomTab.Screen
+        options={{
+          tabBarLabel: 'Search',
+          backgroundColor: 'red',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="heart-outline" color={color} size={35} />
+          ),
+        }}
+        name='ActivityStack'
+        component={ActivityStack} />
+      <BottomTab.Screen
+        options={{
+          tabBarLabel: 'UserProfile',
+          backgroundColor: 'red',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" color={color} size={35} />
+          ),
+        }}
+        name='UserProfileStack'
+        component={UserProfileStack} />
     </BottomTab.Navigator>
   )
 }
@@ -56,6 +154,7 @@ const MainStack = () => {
   return (
     <Stack.Navigator headerMode='none'>
       <Stack.Screen name='HomeBottomTab' component={HomeBottomTab} />
+      <Stack.Screen name='Archive' component={Archive} />
       {/* <MainStack.Screen name='NewPost' component={NewPost}/>
           <MainStack.Screen name='Inbox' component={Inbox}/> */}
     </Stack.Navigator>

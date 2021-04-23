@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import { ScrollView, FlatList, Text } from 'react-native'
+import React from 'react'
+import { ScrollView, FlatList } from 'react-native'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import UserDetails from './userDetails/index'
-import NavigationBar from './NavigationBar'
 import PostItem from './PostItem'
 
 const DATA = [{
@@ -69,45 +70,83 @@ const HIGHLIGHTED_STORIES_DATA = [
   },
 ]
 
-const POST_TYPES = {
-  POST: 'POST',
-  IGTV: 'IGTV',
-  TAGG: 'TAGG',
+const Tab = createMaterialTopTabNavigator();
+
+function PostsScreen() {
+  return (
+    <FlatList
+      numColumns={3}
+      keyExtractor={(item, index) => String(index)}
+      data={DATA}
+      renderItem={({ item }) => (
+        <PostItem
+          postUrl={item.postUrl} />
+      )} />
+  )
+}
+function IGTVScreen() {
+  return null
+}
+function TaggedImagesScreen() {
+  return (
+    <FlatList
+      numColumns={3}
+      keyExtractor={(item, index) => String(index)}
+      data={DATA_TAG}
+      renderItem={({ item }) => (
+        <PostItem
+          postUrl={item.postUrl} />
+      )} />
+  )
 }
 
 
 function IgAccount() {
-  const [postType, setPostType] = useState(POST_TYPES.POST)
-
   return (
-    <>
-      {
-        postType == POST_TYPES.POST || postType == POST_TYPES.TAGG ?
-          <FlatList
-            ListHeaderComponent={
-              <>
-                <UserDetails highlightedStories={HIGHLIGHTED_STORIES_DATA}/>
-                <NavigationBar
-                  postType={postType}
-                  onAllPostsPress={() => setPostType(POST_TYPES.POST)}
-                  onIgtvPress={() => setPostType(POST_TYPES.IGTV)}
-                  onTaggedPostsPress={() => setPostType(POST_TYPES.TAGG)} />
-              </>
-            }
-            data={postType == POST_TYPES.POST ? DATA : DATA_TAG}
-            keyExtractor={item => item.key}
-            numColumns={3}
-            renderItem={({ item }) => (
-              <PostItem
-                postUrl={item.postUrl}
-              />
-            )}
-          /> :
-          <Text style={{ fontSize: 20 }}>igtv</Text>
-      }
-    </>
+    <ScrollView>
+      <UserDetails highlightedStories={HIGHLIGHTED_STORIES_DATA} />
+      <Tab.Navigator
+        tabBarOptions={{
+          showIcon: true,
+          showLabel: false,
+          tabStyle: {
+            height: 70,
+          },
+          indicatorStyle: {
+            backgroundColor: 'black'
+          }
+        }}>
+        <Tab.Screen
+          options={{
+            tabBarLabel: 'Posts',
+            backgroundColor: 'red',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="grid" color={color} size={27} />
+            ),
+          }}
+          name="Posts"
+          component={PostsScreen} />
+        <Tab.Screen
+          options={{
+            tabBarLabel: 'IGTV',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="television-classic" color={color} size={30} />
+            ),
+          }}
+          name="IGTV"
+          component={IGTVScreen} />
+        <Tab.Screen
+          options={{
+            tabBarLabel: 'TaggedImages',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="clipboard-account-outline" color={color} size={27} />
+            ),
+          }}
+          name="TaggedImages"
+          component={TaggedImagesScreen} />
+      </Tab.Navigator>
+    </ScrollView>
   )
 }
 
 export default IgAccount
-export { POST_TYPES }

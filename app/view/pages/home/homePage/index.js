@@ -48,7 +48,7 @@ function HomePage() {
 
 const styles = StyleSheet.create({
 	sectionFlatList: {
-		height: 600
+		height: 550
 	}
 });
 
