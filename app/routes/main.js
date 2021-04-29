@@ -6,15 +6,14 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import HomePage from 'view/pages/home/homePage'
-import IgAccount from 'view/pages/home/igAccount'
-import UserProfile from 'view/pages/home/userProfile/index'
-import Archive from 'view/pages/home/userProfile/Archive'
+import HomePage from '../view/pages/home/index'
+import IgAccount from '../view/pages/igAccount/index'
+import UserProfile from 'view/pages/userProfile/index'
+import Archive from 'view/pages/userProfile/Archive'
 
 const Stack = createStackNavigator()
 const StackHome = createStackNavigator()
 const BottomTab = createBottomTabNavigator()
-const StackUserProfile = createBottomTabNavigator()
 const Drawer = createDrawerNavigator();
 
 function HomeStack() {

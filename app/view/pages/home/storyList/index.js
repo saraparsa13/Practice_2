@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
 	},
 	sectionFlatList: {
 		flex: 1,
-		borderColor: 'white',
+		borderColor: 'transparent',
 		borderWidth: StyleSheet.hairlineWidth,
 		borderBottomColor: 'lightgray',
 	}

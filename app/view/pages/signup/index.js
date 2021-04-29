@@ -1,92 +1,90 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, Text, TextInput, Modal, FlatList } from 'react-native'
-import Icons from 'react-native-vector-icons/AntDesign'
+import React, { useState, useEffect } from 'react'
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import { Formik } from 'formik'
 import * as yup from 'yup'
+import Icons from 'react-native-vector-icons/AntDesign'
+import gate from 'gate'
+import { useApi } from 'helpers/useApi'
 
-import { DATA } from './DialCode'
+import { DATA } from '../DialCode'
+import ModalPicker from '../ModalPicker'
+import IGTextInput from 'View/components/IGTextInput'
+import IGButton from 'View/components/IGButton'
+
+const EmailValidationSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Please enter valid email")
+    .required('Email Address is Required')
+})
 
 const phoneNumRegex = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/
-
-const loginValidationSchema = yup.object().shape({
-  // email: yup
-  //   .string()
-  //   .email("Please enter valid email")
-  //   .required('Email Address is Required'),
+const PhoneValidationSchema = yup.object().shape({
   phoneNum: yup
     .string()
-    .matches(phoneNumRegex, 'Phone number is Not valid')
-    .min(8, ({ min }) => `Phone number must be at least ${min} characters`)
-    .required('phone number is required'),
+    // .matches(phoneNumRegex, 'Phone number is Not valid')
+    .min(11, ({ min }) => `Phone number must be ${min} characters`)
+    .max(11, ({ max }) => `Phone number must be ${max} characters`)
+    .required('Phone number is required'),
+  password: yup
+    .string()
+    .min(8, ({ min }) => `Password must be at least ${min} characters`)
+    .max(32, ({ max }) => `Password must be at last ${max} characters`)
+    .required('Password is required'),
 })
 
 
-function RegisterPage() {
+function SignUp() {
   const [sectionType, setSectionType] = useState(true)
   const [modalVisible, setModalVisible] = useState(false)
   const [dialCode, setDialCode] = useState('IR +98')
+  const navigation = useNavigation()
+  const { data, isLoading, mutate, error } = useApi(gate.signUp)
 
-  const [data, setData] = useState({
+  const [modalData, setModalData] = useState({
     inputText: '',
     filteredData: DATA
   })
 
-  // const validateEmail = (values) => {
-  //   let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-
-  //   !reg.test(values.email) ? false : true
-  // }
-
   const search = (searchText) => {
-
     const FILTERED_DATA = DATA.filter((item) => {
       return item.name.includes(searchText) || item.dial_code.includes(searchText)
     })
-    setData({ inputText: searchText, filteredData: FILTERED_DATA })
+    setModalData({ inputText: searchText, filteredData: FILTERED_DATA })
   }
-  // console.log(data)
+
+  // useEffect(() => {
+  //   console.log(data)
+  // }, [data])
+
+
+  const signUp = async (data) => {
+    try {
+      const res = await gate.signUp(data)
+      console.log(res)
+      if (res.status === 'SUCCESS') {
+        return navigation.navigate('VerifyCode', {
+          phoneNumber: data.phone
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <View style={styles.sectionContainer}>
       {/* MODAL SECTION */}
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <ModalPicker
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.modalInputContainer}>
-              <Icons
-                onPress={() => setModalVisible(false)}
-                name='closecircleo'
-                color='white'
-                size={30}
-                style={styles.sectionModalIcon} />
-              <TextInput
-                value={data.inputText}
-                onChangeText={search}
-                placeholder='Country name or code '
-                placeholderTextColor='#a6a6a6'
-                style={styles.sectionModalInput} />
-            </View>
-            <FlatList
-              data={data.filteredData}
-              keyExtractor={(item, index) => String(index)}
-              renderItem={({ item }) =>
-                <Text
-                  onPress={() => setDialCode(item.code + ' ' + item.dial_code)}
-                  style={styles.sectionFlatListItem}>
-                  {item.name + '  ' + '(' + item.dial_code + ')'}
-                </Text>
-              }
-            />
-          </View>
-        </View>
-      </Modal>
+        value={modalData.inputText}
+        onChangeText={search}
+        data={modalData.filteredData}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        setDialCode={setDialCode}
+      />
       {/* EMAIL OR PHONE NUMBER PAGE */}
       <View style={styles.sectionIconContainer}>
         <Icons name='user' size={100} color='#bfbfbf' />
@@ -131,7 +129,7 @@ function RegisterPage() {
           sectionType ?
             <Formik
               validateOnMount={true}
-              validationSchema={loginValidationSchema}
+              validationSchema={EmailValidationSchema}
               initialValues={{ email: '' }}
               onSubmit={values => console.log(values)}>
               {({
@@ -144,37 +142,38 @@ function RegisterPage() {
                 isValid,
               }) => (
                 <>
-                  <TextInput
+                  <IGTextInput
                     name="email"
-                    style={!isValid ?  [styles.sectionEmailInput , {borderColor: 'red', borderWidth: 1}] : styles.sectionEmailInput}
+                    isValid={isValid}
+                    touched={touched.email}
+                    errors={errors.email}
+                    value={values.email}
                     placeholderTextColor='#a6a6a6'
                     onChangeText={handleChange('email')}
                     onBlur={handleBlur('email')}
                     value={values.email}
                     placeholder="email address"
                     keyboardType="email-address"
+                    style={styles.sectionEmailInput}
                   />
                   {(errors.email && touched.email) &&
                     <Text style={styles.sectionErrorMsg}>{errors.email}</Text>
                   }
-                  <TouchableOpacity
-                    disabled={!isValid || values.email === ''}
-                    style={
-                      !isValid ?
-                        styles.disableButton :
-                        styles.enableButton}
+                  <IGButton
+                    isValid={isValid}
+                    values={values.phoneNum}
                     onPress={handleSubmit}
-                  >
-                    <Text style={styles.sectionButtonTxt}>Next</Text>
-                  </TouchableOpacity>
+                  />
                 </>
               )}
             </Formik> :
             <Formik
               validateOnMount={true}
-              validationSchema={loginValidationSchema}
-              initialValues={{ phoneNum: '' }}
-              onSubmit={values => console.log(values)}>
+              validationSchema={PhoneValidationSchema}
+              initialValues={{ phoneNum: '', password: '' }}
+              onSubmit={values =>
+                signUp({ "phone": values.phoneNum, "password": values.password })
+              }>
               {({
                 handleChange,
                 handleBlur,
@@ -186,31 +185,51 @@ function RegisterPage() {
               }) => (
                 <>
                   <View style={styles.phonenumContainer}>
-                    <TouchableOpacity
-                      onPress={() => setModalVisible(true)}
-                      style={styles.sectionDialCode}>
-                      <Text style={styles.sectionDialCodeText}>{dialCode}</Text>
-                    </TouchableOpacity>
-                    <TextInput
-                      name="phoneNum"
-                      style = {[styles.sectionPhoneNumInput , !isValid && {borderColor: 'red', borderWidth: 1}] }
-                      placeholderTextColor='#a6a6a6'
-                      onChangeText={handleChange('phoneNum')}
-                      onBlur={handleBlur('phoneNum')}
-                      value={values.phoneNum}
-                      placeholder="phone number"
-                      keyboardType="numeric"
-                    />
+                    <View style={styles.sectionPhoneNumContaienr}>
+                      <TouchableOpacity
+                        onPress={() => setModalVisible(true)}
+                        style={styles.sectionDialCode}>
+                        <Text style={styles.sectionDialCodeText}>{dialCode}</Text>
+                      </TouchableOpacity>
+                      <IGTextInput
+                        isValid={isValid}
+                        touched={touched.phoneNum}
+                        errors={errors.phoneNum}
+                        value={values.phoneNum}
+                        name="phoneNum"
+                        style={styles.sectionPhoneNumInput}
+                        onChangeText={handleChange('phoneNum')}
+                        onBlur={handleBlur('phoneNum')}
+                        placeholder="phone number"
+                        keyboardType="numeric"
+                      />
+                    </View>
+                    {(errors.phoneNum && touched.phoneNum) &&
+                      <Text style={styles.sectionErrorMsg}>{errors.phoneNum}</Text>
+                    }
+                    <View>
+                      <IGTextInput
+                        name="password"
+                        isValid={isValid}
+                        touched={touched.password}
+                        errors={errors.password}
+                        value={values.password}
+                        style={styles.sectionPassInput}
+                        onChangeText={handleChange('password')}
+                        onBlur={handleBlur('password')}
+                        placeholder="password"
+                        keyboardType="numeric"
+                      />
+                    </View>
+                    {(errors.password && touched.password) &&
+                      <Text style={styles.sectionErrorMsg}>{errors.password}</Text>
+                    }
                   </View>
-                  {(errors.phoneNum) &&
-                    <Text style={styles.sectionErrorMsg}>{errors.phoneNum}</Text>
-                  }
-                  <TouchableOpacity
-                    disabled={!isValid || values.phoneNum === ''}
+                  <IGButton
+                    values={values.phoneNum}
                     onPress={handleSubmit}
-                    style={!isValid ? styles.disableButton : styles.enableButton}>
-                    <Text style={styles.sectionButtonTxt}>Next</Text>
-                  </TouchableOpacity>
+                    isValid={isValid}
+                  />
                 </>
               )}
             </Formik>
@@ -299,8 +318,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white'
   },
+  sectionPhoneNumContaienr: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: 4
+  },
   sectionPhoneNumInput: {
     width: 340,
+    height: 60,
+    padding: 18,
+    borderWidth: 1,
+    backgroundColor: '#363636',
+    borderRadius: 5,
+    fontSize: 20,
+    color: 'white'
+  },
+  sectionPassInput: {
+    width: 440,
     height: 60,
     padding: 18,
     borderWidth: 1,
@@ -391,7 +425,7 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   sectionModalInput: {
-    width: 230,
+    width: 280,
     borderWidth: 1,
     borderColor: '#a6a6a6',
     color: 'white',
@@ -404,8 +438,8 @@ const styles = StyleSheet.create({
   },
   phonenumContainer: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'column',
   }
 })
 
-export default RegisterPage
+export default SignUp

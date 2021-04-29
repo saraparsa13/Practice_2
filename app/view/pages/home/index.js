@@ -1,61 +1,73 @@
-// import React, { useState } from 'react'
-// import {
-//   SafeAreaView,
-//   ScrollView,
-//   StatusBar,
-//   StyleSheet,
-//   useColorScheme,
-//   View,
-// } from 'react-native'
+import React, {useEffect, useState} from 'react'
+import { FlatList, StyleSheet } from 'react-native'
+import HomeHeader from './HomeHeader'
+import StoryList from './storyList/index'
+import PostItem from './PostItem'
+import gate from 'gate'
+import tokenHelper from 'helpers/token';
 
-// import Ionicons from 'react-native-vector-icons/Ionicons'
-// import { BottomNavigation, Text } from 'react-native-paper'
+const data = [
+	{
+		key: 1,
+		avatar: 'https://unsplash.it/100?image=856',
+		postTitle: 'Mr. Folani',
+		postImage: 'http://beeimg.com/images/h26180623163.jpg'
+	},
+	{
+		key: 2,
+		avatar: 'https://unsplash.it/100?image=669',
+		postTitle: 'Mrs. Folani',
+		postImage: 'https://i.pinimg.com/originals/26/42/26/26422665b452967ebc301deadb2a036d.jpg'
+	},
+	{
+		key: 3,
+		avatar: 'https://unsplash.it/100?image=1041',
+		postTitle: 'Mr. Folani tar',
+		postImage: 'https://i1.pickpik.com/photos/397/1022/570/sunflower-blue-sky-field-flower-preview.jpg'
+	},
+]
 
-// import HomePage from './homePage/index'
-// import IgAccount from './igAccount'
-// import RegisterPage from './ResgiterPage'
+const renderPosts = async () => {
+	try {
+		const res = await gate.renderPosts()
+		console.log(res)
+	} catch (error) {
+		console.log(error)
+	}
+}
 
-// const HomeRoute = () => <HomePage />
+function HomePage() {
+	// const [posts, setPosts] = useState(initialState)
+	useEffect(() => {
+		renderPosts()
+	}, [])
 
-// const SearchRoute = () => <IgAccount />
+	return (
+		<>
+			<HomeHeader />
+			<FlatList
+				ListHeaderComponent={
+					<StoryList />
+				}
+				data={data}
+				// style={styles.sectionFlatList}
+				keyExtractor={(item, index) => String(index)}
+				renderItem={({ item }) => (
+					<PostItem
+						avatar={item.avatar}
+						postTitle={item.postTitle}
+						postImage={item.postImage}
+					/>
+				)}
+			/>
+		</>
+	)
+}
 
-// const AddPostRoute = () => null
+// const styles = StyleSheet.create({
+// 	sectionFlatList: {
+// 		height: 550
+// 	}
+// });
 
-// const FavoriteRoute = () => null
-
-// const ProfileRoute = () => null
-
-// const App = () => {
-//   const [isAuthorized, setIsAuthorized] = useState(false)
-//   const [index, setIndex] = useState(0)
-//   const [routes] = React.useState([
-//     { key: 'home', icon: 'home-variant' },
-//     { key: 'search', icon: 'magnify' },
-//     { key: 'addpost', icon: 'plus-box-outline' },
-//     { key: 'favorite', icon: 'heart-outline' },
-//     { key: 'profile', icon: 'account' },
-//   ])
-
-//   const renderScene = BottomNavigation.SceneMap({
-//     home: HomeRoute,
-//     search: SearchRoute,
-//     addpost: AddPostRoute,
-//     favorite: FavoriteRoute,
-//     profile: ProfileRoute,
-//   })
-
-
-//   return (
-//     isAuthorized ? (
-//       <BottomNavigation
-//         shifting={false}
-//         barStyle={{ backgroundColor: '#fff', height: 60 }}
-//         navigationState={{ index, routes }}
-//         onIndexChange={setIndex}
-//         renderScene={renderScene}
-//       />
-//     ) : <RegisterPage />
-//   )
-// }
-
-// export default App
+export default HomePage

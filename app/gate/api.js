@@ -2,23 +2,44 @@ import axios from 'axios';
 import isEmpty from 'lodash/isEmpty';
 
 import tokenHelper from 'helpers/token';
-import {API_URL} from 'helpers/constants';
+import { API_URL } from 'helpers/constants';
 
-const client = axios.create({baseURL: API_URL, json: true});
+const client = axios.create({ baseURL: API_URL, json: true });
+
+client.interceptors.request.use(
+  async config => {
+    const token = await tokenHelper.get()
+    if (token !== '') {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  error => {
+    Promise.reject(error)
+  });
+
+// client.interceptors.response.use(
+//   (response) => {
+//     // if (response.data.status === 'SUCCESS') {
+//     //   console.log(response.data.message)
+//     // }
+//     // if (response.data.status === 'FAIL') {
+//     //   alert(response.data.message)
+//     // }
+//     // console.log(response)
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   },
+// );
 
 const call = async (method, url, data = {}) => {
-  const token = await tokenHelper.get();
-
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   };
-
-  if (token !== '') {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  const request = {headers, method, url};
+  
+  const request = { headers, method, url };
 
   if (!isEmpty(data)) {
     if (method !== 'get') {

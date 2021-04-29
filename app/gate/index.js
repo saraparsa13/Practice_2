@@ -9,25 +9,39 @@ const methods = {
 };
 
 const auth = {
-  checkMe: () => api.get('check/me'),
-  checkUser: () => api.get('check/user'),
-  checkVer: () => api.get('check/ver'),
+  // checkMe: () => api.get('check/me'),
+  // checkUser: () => api.get('check/user'),
+  // checkVer: () => api.get('check/ver'),
 
-  signIn: (data) => api.post('sign-in', data),
-  signInConfirmation: (data) => api.post('sign-in-confirmation', data),
+  // signIn: (data) => api.post('sign-in', data),
+  // signInConfirmation: (data) => api.post('sign-in-confirmation', data),
 
-  signOut: () => api.signOut('sign-out'),
+  // signOut: () => api.signOut('sign-out'),
 
-  signUp: (data) => api.post('sign-up', data),
-  signUpConfirmation: (data) => api.post('sign-up-confirmation', data),
+  // resend : (data) => api.post('auth/resend', data),
+
+  signUp: (data) => api.post('auth/register', data),
+  // signUpConfirmation: (data) => api.post('auth/verify', data),
 };
+
+const renderPosts = () => {
+  return api.get('ig/posts?page=1')
+}
+const resend = (data) => {
+  return api.get('auth/resend', data)
+}
+const verify = (data) => {
+  return api.post('auth/verify', data)
+}
 
 export default {
   getRepositories: (query) =>
     api.get(`/search/repositories?q=${query}&sort=stars`, {}),
   // any: someId => api.get(`/any/${someId}`),
   // any: data => api.post('/any', data),
-
   ...methods,
   ...auth,
+  renderPosts,
+  resend,
+  verify
 };
