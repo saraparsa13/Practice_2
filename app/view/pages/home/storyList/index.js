@@ -40,6 +40,7 @@ const StoryList = () => {
 			showsHorizontalScrollIndicator={false}
 			style={styles.sectionFlatList}
 			data={data}
+			keyExtractor={item => item.key.toString()}
 			renderItem={({ item }) => (
 				<StoryItem
 					key={item => item.key}
@@ -53,9 +54,6 @@ const StoryList = () => {
 
 const styles = StyleSheet.create({
 	sectionContainer: {
-		// width: 'auto',
-		// height: 110,
-		// backgroundColor: 'white',
 		flexDirection: 'column',
 		alignItems: 'center',
 	},

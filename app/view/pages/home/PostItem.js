@@ -43,7 +43,9 @@ function PostItem(props) {
 						style={styles.sectionIcon} />
 					<Icon
 						onPress={() =>
-							navigation.navigate('Comments', { id: id, desc: desc, username: username })
+							navigation.navigate('Comments', {
+								id: id, desc: desc, username: username
+							})
 						}
 						name="message-circle"
 						size={30} color="black"
