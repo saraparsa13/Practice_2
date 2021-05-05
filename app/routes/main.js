@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -10,6 +10,7 @@ import HomePage from '../view/pages/home/index'
 import IgAccount from '../view/pages/igAccount/index'
 import UserProfile from 'view/pages/userProfile/index'
 import Archive from 'view/pages/userProfile/Archive'
+import Comments from '../view/pages/comments';
 
 const Stack = createStackNavigator()
 const StackHome = createStackNavigator()
@@ -154,6 +155,7 @@ const MainStack = () => {
     <Stack.Navigator headerMode='none'>
       <Stack.Screen name='HomeBottomTab' component={HomeBottomTab} />
       <Stack.Screen name='Archive' component={Archive} />
+      <StackHome.Screen name='Comments' component={Comments} />
       {/* <MainStack.Screen name='NewPost' component={NewPost}/>
           <MainStack.Screen name='Inbox' component={Inbox}/> */}
     </Stack.Navigator>

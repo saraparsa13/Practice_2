@@ -13,7 +13,7 @@ const auth = {
   // checkUser: () => api.get('check/user'),
   // checkVer: () => api.get('check/ver'),
 
-  // signIn: (data) => api.post('sign-in', data),
+  signIn: (data) => api.post('auth/login', data),
   // signInConfirmation: (data) => api.post('sign-in-confirmation', data),
 
   // signOut: () => api.signOut('sign-out'),
@@ -24,14 +24,21 @@ const auth = {
   // signUpConfirmation: (data) => api.post('auth/verify', data),
 };
 
-const renderPosts = () => {
-  return api.get('ig/posts?page=1')
-}
 const resend = (data) => {
   return api.get('auth/resend', data)
 }
 const verify = (data) => {
   return api.post('auth/verify', data)
+}
+const renderPosts = (pageIndex, limit) => {
+  return api.get(`ig/posts?page=${pageIndex}&limit=${limit}`)
+}
+const renderComments = (postId, page) => {
+  return api.get(`ig/comments?post_id=${postId}&page=${page}`)
+}
+
+const addComment = (data) => {
+  return api.post('ig/comments', data)
 }
 
 export default {
@@ -41,7 +48,9 @@ export default {
   // any: data => api.post('/any', data),
   ...methods,
   ...auth,
-  renderPosts,
   resend,
-  verify
+  verify,
+  renderPosts,
+  renderComments,
+  addComment,
 };

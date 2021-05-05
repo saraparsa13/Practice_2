@@ -4,13 +4,15 @@ import { useNavigation } from '@react-navigation/native'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import Icons from 'react-native-vector-icons/AntDesign'
+import { useMutation } from 'react-query'
+
 import gate from 'gate'
 import { useApi } from 'helpers/useApi'
+import TextInput from 'View/components/TextInput'
+import Button from 'View/components/Button'
 
 import { DATA } from '../DialCode'
 import ModalPicker from '../ModalPicker'
-import IGTextInput from 'View/components/IGTextInput'
-import IGButton from 'View/components/IGButton'
 
 const EmailValidationSchema = yup.object().shape({
   email: yup
@@ -40,7 +42,21 @@ function SignUp() {
   const [modalVisible, setModalVisible] = useState(false)
   const [dialCode, setDialCode] = useState('IR +98')
   const navigation = useNavigation()
-  const { data, isLoading, mutate, error } = useApi(gate.signUp)
+  const [phone, setPhone] = useState('')
+
+  // useEffect(() => {
+  //   console.log(phone)
+  // }, [phone])
+
+  const { mutate } = useMutation(gate.signUp, {
+    onSuccess: (data) => {
+      console.log('signup data =>>>>>', data)
+      // console.log(data)
+      return navigation.navigate('VerifyCode', {
+        phoneNumber: phone
+      })
+    }
+  })
 
   const [modalData, setModalData] = useState({
     inputText: '',
@@ -59,19 +75,19 @@ function SignUp() {
   // }, [data])
 
 
-  const signUp = async (data) => {
-    try {
-      const res = await gate.signUp(data)
-      console.log(res)
-      if (res.status === 'SUCCESS') {
-        return navigation.navigate('VerifyCode', {
-          phoneNumber: data.phone
-        })
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // const signUp = async (data) => {
+  //   try {
+  //     const res = await gate.signUp(data)
+  //     console.log(res)
+  //     if (res.status === 'SUCCESS') {
+  //       return navigation.navigate('VerifyCode', {
+  //         phoneNumber: data.phone
+  //       })
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   return (
     <View style={styles.sectionContainer}>
@@ -142,26 +158,20 @@ function SignUp() {
                 isValid,
               }) => (
                 <>
-                  <IGTextInput
+                  <TextInput
                     name="email"
-                    isValid={isValid}
-                    touched={touched.email}
-                    errors={errors.email}
+                    error={touched.email && errors.email}
                     value={values.email}
                     placeholderTextColor='#a6a6a6'
                     onChangeText={handleChange('email')}
                     onBlur={handleBlur('email')}
-                    value={values.email}
                     placeholder="email address"
                     keyboardType="email-address"
                     style={styles.sectionEmailInput}
                   />
-                  {(errors.email && touched.email) &&
-                    <Text style={styles.sectionErrorMsg}>{errors.email}</Text>
-                  }
-                  <IGButton
-                    isValid={isValid}
-                    values={values.phoneNum}
+                  <Button
+                    title='Next'
+                    disable={isValid}
                     onPress={handleSubmit}
                   />
                 </>
@@ -171,8 +181,11 @@ function SignUp() {
               validateOnMount={true}
               validationSchema={PhoneValidationSchema}
               initialValues={{ phoneNum: '', password: '' }}
-              onSubmit={values =>
-                signUp({ "phone": values.phoneNum, "password": values.password })
+              onSubmit={values => {
+                // setPhone(values.phoneNum)
+                setPhone(values.phoneNum);
+                mutate({ "phone": values.phoneNum, "password": values.password })
+              }
               }>
               {({
                 handleChange,
@@ -191,44 +204,38 @@ function SignUp() {
                         style={styles.sectionDialCode}>
                         <Text style={styles.sectionDialCodeText}>{dialCode}</Text>
                       </TouchableOpacity>
-                      <IGTextInput
-                        isValid={isValid}
-                        touched={touched.phoneNum}
-                        errors={errors.phoneNum}
+                      <TextInput
+                        error={touched.phoneNum && errors.phoneNum}
                         value={values.phoneNum}
                         name="phoneNum"
                         style={styles.sectionPhoneNumInput}
-                        onChangeText={handleChange('phoneNum')}
+                        onChangeText={
+                          handleChange('phoneNum')
+                        }
                         onBlur={handleBlur('phoneNum')}
                         placeholder="phone number"
                         keyboardType="numeric"
                       />
                     </View>
-                    {(errors.phoneNum && touched.phoneNum) &&
-                      <Text style={styles.sectionErrorMsg}>{errors.phoneNum}</Text>
-                    }
                     <View>
-                      <IGTextInput
+                      <TextInput
                         name="password"
-                        isValid={isValid}
-                        touched={touched.password}
-                        errors={errors.password}
+                        error={touched.password && errors.password}
                         value={values.password}
                         style={styles.sectionPassInput}
-                        onChangeText={handleChange('password')}
+                        onChangeText={
+                          handleChange('password')
+                        }
                         onBlur={handleBlur('password')}
                         placeholder="password"
                         keyboardType="numeric"
                       />
                     </View>
-                    {(errors.password && touched.password) &&
-                      <Text style={styles.sectionErrorMsg}>{errors.password}</Text>
-                    }
                   </View>
-                  <IGButton
-                    values={values.phoneNum}
+                  <Button
+                    title='Next'
                     onPress={handleSubmit}
-                    isValid={isValid}
+                    disable={isValid}
                   />
                 </>
               )}
@@ -236,7 +243,12 @@ function SignUp() {
         }
       </View>
       <View style={styles.sectionBottom}>
-        <Text style={styles.sectionBottomFont}>Already have an account?</Text>
+        <Text style={styles.sectionBottomFont}>Already have an account?{' '}
+          <Text
+            style={styles.sectionBottomFont}
+            onPress={() => navigation.navigate('Login')}
+          >Login</Text>
+        </Text>
       </View>
     </View>
   )

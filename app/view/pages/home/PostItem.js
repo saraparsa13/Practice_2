@@ -4,7 +4,8 @@ import Icon from 'react-native-vector-icons/Feather'
 import { useNavigation } from '@react-navigation/native';
 
 
-function PostItem({ avatar, postTitle, postImage }) {
+function PostItem(props) {
+	const { media_uri, username, id, desc } = props
 	const navigation = useNavigation();
 	return (
 		<>
@@ -15,9 +16,9 @@ function PostItem({ avatar, postTitle, postImage }) {
 					onPress={() => navigation.navigate('IGAccount')}>
 					<Image
 						style={styles.sectionImage}
-						source={{ uri: avatar }}
+					// source={{ uri: avatar }}
 					/>
-					<Text style={styles.sectionTitleFont}>{postTitle}</Text>
+					<Text style={styles.sectionTitleFont}>{username}</Text>
 				</TouchableOpacity>
 				<View style={styles.sectionTitleIcon}>
 					<Icon name="more-horizontal"
@@ -29,7 +30,7 @@ function PostItem({ avatar, postTitle, postImage }) {
 			<View>
 				<Image
 					style={styles.sectionPostImage}
-					source={{ uri: postImage }}
+					source={{ uri: media_uri }}
 				/>
 			</View>
 			{/* Post Caption Section */}
@@ -41,6 +42,9 @@ function PostItem({ avatar, postTitle, postImage }) {
 						color="black"
 						style={styles.sectionIcon} />
 					<Icon
+						onPress={() =>
+							navigation.navigate('Comments', { id: id, desc: desc, username: username })
+						}
 						name="message-circle"
 						size={30} color="black"
 						style={styles.sectionIcon} />

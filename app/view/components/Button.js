@@ -1,13 +1,13 @@
 import React from 'react'
 import { TouchableOpacity, Text, StyleSheet } from 'react-native'
 
-function IGButton({ isValid, values, onPress }) {
+function Button({ disable, onPress, title }) {
   return (
     <TouchableOpacity
-      disabled={!isValid || values === ''}
+      disabled={!disable}
       onPress={onPress}
-      style={!isValid ? styles.disableButton : styles.enableButton}>
-      <Text style={styles.sectionButtonTxt}>Next</Text>
+      style={!disable ? styles.disableButton : styles.enableButton}>
+      <Text style={styles.sectionButtonTxt}>{title}</Text>
     </TouchableOpacity>
   )
 }
@@ -39,4 +39,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default IGButton
+export default Button

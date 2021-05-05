@@ -1,73 +1,83 @@
-import React, {useEffect, useState} from 'react'
-import { FlatList, StyleSheet } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { useInfiniteQuery } from 'react-query'
+import { FlatList, StyleSheet, ActivityIndicator } from 'react-native'
 import HomeHeader from './HomeHeader'
 import StoryList from './storyList/index'
 import PostItem from './PostItem'
 import gate from 'gate'
-import tokenHelper from 'helpers/token';
-
-const data = [
-	{
-		key: 1,
-		avatar: 'https://unsplash.it/100?image=856',
-		postTitle: 'Mr. Folani',
-		postImage: 'http://beeimg.com/images/h26180623163.jpg'
-	},
-	{
-		key: 2,
-		avatar: 'https://unsplash.it/100?image=669',
-		postTitle: 'Mrs. Folani',
-		postImage: 'https://i.pinimg.com/originals/26/42/26/26422665b452967ebc301deadb2a036d.jpg'
-	},
-	{
-		key: 3,
-		avatar: 'https://unsplash.it/100?image=1041',
-		postTitle: 'Mr. Folani tar',
-		postImage: 'https://i1.pickpik.com/photos/397/1022/570/sunflower-blue-sky-field-flower-preview.jpg'
-	},
-]
-
-const renderPosts = async () => {
-	try {
-		const res = await gate.renderPosts()
-		console.log(res)
-	} catch (error) {
-		console.log(error)
-	}
-}
 
 function HomePage() {
-	// const [posts, setPosts] = useState(initialState)
-	useEffect(() => {
-		renderPosts()
-	}, [])
+	const [posts, setPosts] = useState([])
 
+	const {
+		data,
+		fetchNextPage,
+		fetchPreviousPage,
+		hasNextPage,
+		hasPreviousPage,
+		isFetchingNextPage,
+		isFetchingPreviousPage,
+		...result
+	} = useInfiniteQuery('posts', ({ pageParam = 1 }) => gate.renderPosts(pageParam, 5), {
+		getNextPageParam: (lastPage, allPages) => {
+			// console.log(lastPage)
+			return lastPage.data.length === 5 ? allPages.length + 1 : false
+		}
+		// getPreviousPageParam: (firstPage, allPages) => firstPage.prevCursor,
+	})
+
+
+	useEffect(() => {
+		if (data?.pageParams.length === 1) {
+			setPosts(data?.pages?.[0]?.data)
+			// console.log('hi')
+		}
+		else {
+			data?.pages.reduce((pre, next) => {
+				setPosts([...posts, ...next?.data])
+			})
+		}
+	}, [data?.pageParams])
+
+	console.log(posts)
+	
 	return (
 		<>
 			<HomeHeader />
 			<FlatList
 				ListHeaderComponent={
-					<StoryList />
+					() => <StoryList key='555' />
 				}
-				data={data}
-				// style={styles.sectionFlatList}
-				keyExtractor={(item, index) => String(index)}
+				data={posts}
+				style={styles.sectionFlatList}
+				ListFooterComponent={
+					<ActivityIndicator size="large" color="#0000ff" />
+				}
+				// onEndReached={fetchNextPage}
+				onEndReached={() => {
+					if (isFetchingNextPage) {
+						console.log('Loading more...')
+					} else if (hasNextPage) {
+						fetchNextPage()
+					} else {
+						console.log('Nothing more to load')
+					}
+				}}
+				onEndReachedThreshold={0.5}
+				initialNumToRender={10}
+				keyExtractor={(item) => item?.id.toString()}
 				renderItem={({ item }) => (
-					<PostItem
-						avatar={item.avatar}
-						postTitle={item.postTitle}
-						postImage={item.postImage}
-					/>
+					<PostItem	{...item} />
 				)}
 			/>
 		</>
 	)
 }
 
-// const styles = StyleSheet.create({
-// 	sectionFlatList: {
-// 		height: 550
-// 	}
-// });
+const styles = StyleSheet.create({
+	sectionFlatList: {
+		height: 550
+	}
+});
 
 export default HomePage

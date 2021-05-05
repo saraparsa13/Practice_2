@@ -39,7 +39,7 @@ const Router = () => {
 
   useEffect(() => {
     init()
-  }, [])
+  }, []);
 
   return (
     <NavigationContainer theme={navigationTheme}>

@@ -3,31 +3,31 @@ import { StyleSheet, FlatList } from 'react-native'
 import StoryItem from './StoryItem'
 
 const data = [{
-	key: 1,
+	key: 111,
 	username: 'jennifer',
 	avatarUrl: 'https://unsplash.it/100?image=1027'
 }, {
-	key: 2,
+	key: 222,
 	username: 'zack',
 	avatarUrl: 'https://unsplash.it/100?image=856'
 }, {
-	key: 3,
+	key: 3333,
 	username: 'luke',
 	avatarUrl: 'https://unsplash.it/100?image=669'
 }, {
-	key: 4,
+	key: 444,
 	username: 'ken',
 	avatarUrl: 'https://unsplash.it/100?image=550'
 }, {
-	key: 5,
+	key: 555,
 	username: 'May',
 	avatarUrl: 'https://unsplash.it/100?image=503'
 }, {
-	key: 6,
+	key: 666,
 	username: 'Luck',
 	avatarUrl: 'https://unsplash.it/100?image=1041'
 }, {
-	key: 7,
+	key: 777,
 	username: 'Jack',
 	avatarUrl: 'https://unsplash.it/100?image=1005'
 }
@@ -40,9 +40,9 @@ const StoryList = () => {
 			showsHorizontalScrollIndicator={false}
 			style={styles.sectionFlatList}
 			data={data}
-			keyExtractor={item => item.key}
 			renderItem={({ item }) => (
 				<StoryItem
+					key={item => item.key}
 					username={item.username}
 					avatarUrl={item.avatarUrl}
 				/>
@@ -53,8 +53,8 @@ const StoryList = () => {
 
 const styles = StyleSheet.create({
 	sectionContainer: {
-		width: 'auto',
-		height: 110,
+		// width: 'auto',
+		// height: 110,
 		// backgroundColor: 'white',
 		flexDirection: 'column',
 		alignItems: 'center',

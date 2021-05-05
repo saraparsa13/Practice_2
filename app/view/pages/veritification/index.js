@@ -1,13 +1,15 @@
 import React from 'react'
-import { Text, StyleSheet, View, TextInput, TouchableOpacity } from 'react-native'
+import { Text, StyleSheet, View } from 'react-native'
 import { useRoute } from '@react-navigation/native';
 import tokenHelper from 'helpers/token';
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import gate from 'gate'
+import { useMutation } from 'react-query'
+import { useNavigation } from '@react-navigation/native'
 
-import IGTextInput from 'View/components/IGTextInput'
-import IGButton from '../../components/IGButton';
+import gate from 'gate'
+import TextInput from 'View/components/TextInput'
+import Button from '../../components/Button';
 
 const CodeValidationSchema = yup.object().shape({
   code: yup
@@ -17,17 +19,17 @@ const CodeValidationSchema = yup.object().shape({
     .required('Confirmation Code is Required')
 })
 
-const verify = async (data) => {
-  try {
-    const res = await gate.verify(data)
-    if (res.status === 'SUCCESS') {
-      const storeToken = tokenHelper.set(res.data.token)
-      console.log(storeToken)
-    }
-  } catch (error) {
-    console.log(error)
-  }
-}
+// const verify = async (data) => {
+//   try {
+//     const res = await gate.verify(data)
+//     if (res.status === 'SUCCESS') {
+//       const storeToken = tokenHelper.set(res.data.token)
+//       console.log(storeToken)
+//     }
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
 const resend = async (data) => {
   try {
@@ -41,6 +43,15 @@ const resend = async (data) => {
 function VerifyCode() {
   const route = useRoute()
   let phone = route.params.phoneNumber
+  console.log(phone)
+  
+  const { mutate, isLoading } = useMutation(gate.verify, {
+    onSuccess: (data) => {
+      console.log('verify data =>>>', data)
+      const storeToken = tokenHelper.set(data.data.token)
+    }
+  })
+
   return (
     <View style={styles.sectionContainer}>
       <View style={styles.header}>
@@ -48,9 +59,9 @@ function VerifyCode() {
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>
             Enter the 6-digit code we sent to {' '}
-            {route.params.phoneNumber}. {' '}
+            {phone}. {' '}
             <Text
-              onPress={() => resend({"phone": route.params.phoneNumber})}
+              onPress={() => resend({ "phone": phone })}
               style={styles.headerRequestButton}>
               Resquest a new one
             </Text>
@@ -65,7 +76,7 @@ function VerifyCode() {
           initialValues={{ code: '' }}
           onSubmit={
             values =>
-              verify({ phone, "verifyCode": values.code })
+              mutate({ "phone": phone, "verifyCode": values.code })
           }>
           {({
             handleChange,
@@ -77,24 +88,19 @@ function VerifyCode() {
             isValid,
           }) => (
             <>
-
-              <IGTextInput
+              <TextInput
                 name="code"
                 style={styles.veritificationInput}
                 onChangeText={handleChange('code')}
                 onBlur={handleBlur('code')}
                 value={values.code}
-                errors={errors.code}
-                touched={touched.code}
+                error={errors.code && touched.code}
                 placeholder="Veritification Code"
                 keyboardType="numeric"
               />
-              {(errors.code && touched.code) &&
-                <Text style={styles.sectionErrorMsg}>{errors.code}</Text>
-              }
-              <IGButton
-                isValid={isValid}
-                values={values.code}
+              <Button
+                title='Next'
+                disable={isValid}
                 onPress={handleSubmit}
               />
             </>
