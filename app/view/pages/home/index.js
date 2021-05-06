@@ -8,52 +8,40 @@ import StoryList from './storyList/index'
 import PostItem from './PostItem'
 
 function HomePage() {
-	const [posts, setPosts] = useState([])
-
+	let LIMIT = 5
 	const {
 		data,
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
-	} = useInfiniteQuery('posts', ({ pageParam = 1 }) => gate.renderPosts(pageParam, 5), {
+	} = useInfiniteQuery('posts',
+		async ({ pageParam = 1 }) => {
+			const res = await gate.renderPosts(pageParam, LIMIT)
+			return res.data
+		}, {
 		getNextPageParam: (lastPage, allPages) => {
-			return lastPage?.data?.length === 5 ? allPages?.length + 1 : false
+			return lastPage?.length === LIMIT ? allPages?.length + 1 : false
 		}
 	})
 
-	useEffect(() => {
-		if (data?.pageParams.length === 1) {
-			setPosts(data?.pages?.[0]?.data)
-		}
-		else {
-			data?.pages.map(item => {
-				setPosts([...posts, ...item?.data])
-			})
-		}
-	}, [data?.pageParams])
+	let flatlistData = data?.pages?.flat()
 
-	console.log(posts)
+	console.log(flatlistData)
 
 	return (
 		<>
 			<HomeHeader />
 			<FlatList
-				ListHeaderComponent={
-					<StoryList />
+				ListHeaderComponent={() =>
+					<StoryList key='555' />
 				}
-				data={posts}
+				data={flatlistData}
 				style={styles.sectionFlatList}
 				ListFooterComponent={
 					<ActivityIndicator size="large" color="#0000ff" />
 				}
 				onEndReached={() => {
-					if (isFetchingNextPage) {
-						console.log('Loading more...')
-					} else if (hasNextPage) {
-						fetchNextPage()
-					} else {
-						console.log('Nothing more to load')
-					}
+					!isFetchingNextPage && fetchNextPage()
 				}}
 				onEndReachedThreshold={0.5}
 				initialNumToRender={10}
@@ -68,7 +56,7 @@ function HomePage() {
 
 const styles = StyleSheet.create({
 	sectionFlatList: {
-		height: 550
+		// height: 550
 	}
 });
 

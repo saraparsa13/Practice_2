@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, StyleSheet, FlatList, TextInput, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator
+} from 'react-native'
+import { useMutation, useInfiniteQuery, useQueryClient } from 'react-query'
 import Ionicons from 'react-native-vector-icons/Feather'
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -7,34 +17,44 @@ import gate from '../../../gate'
 import Comment from './Comment';
 
 function Comments() {
+  let LIMIT = 20
   const [comments, setComments] = useState([])
   const [text, onChangeText] = React.useState('')
-  const [page, setPage] = useState(1)
-  const navigation = useNavigation();
-  const route = useRoute();
+  const navigation = useNavigation()
+  const route = useRoute()
+  const QueryClient = useQueryClient()
 
-  const fetcher = async () => {
-    try {
-      const result = await gate.renderComments(route.params.id, page)
-      console.log(result.data)
-      setComments([...comments, ...result.data])
-    } catch (error) {
-      console.log('error => ', error)
+  const { mutate } = useMutation(gate.addComment, {
+    onSuccess: (data) => {
+      setComments([data?.data])
     }
-  }
-  
-  const postComment = async (data) => {
-    try {
-      const res = await gate.addComment(data)
-      setComments([...comments, res.data])
-    } catch (error) {
-      console.log(error)
-    }
+  })
+  console.log(comments)
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(['comments', route.params.id],
+    async ({ pageParam = 1 }) => {
+      const res = await gate.renderComments(route.params.id, pageParam)
+      return res.data
+    },
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage?.length === LIMIT ? allPages.length + 1 : false
+      }
+    })
+
+  let flatlistData = []
+  comments ? flatlistData = data?.pages?.flat() : [...comments, ...data?.pages?.flat()]
+
+  const onRefresh = () => {
+    QueryClient.invalidateQueries(['comments', route.params.id])
   }
 
-  useEffect(() => {
-    fetcher()
-  }, [page])
+  // console.log('data =>>', data)
 
   return (
     <>
@@ -43,13 +63,16 @@ function Comments() {
           <Ionicons
             onPress={() => navigation.goBack()}
             name="arrow-left"
-            size={30} color="black"
+            size={30}
+            color="black"
             style={styles.sectionIcon} />
           <Text style={styles.sectionTitle}>Comments</Text>
         </View>
         <View style={styles.rightSection}>
-          <Ionicons name="send"
-            size={30} color="black"
+          <Ionicons
+            name="send"
+            size={30}
+            color="black"
             style={styles.sectionIcon} />
         </View>
       </View>
@@ -67,14 +90,20 @@ function Comments() {
             </View>
           </View>
         }
-        ListFooterComponent={
-          <Ionicons
-            name="plus-circle"
-            size={70} color="lightgray"
-            onPress={() => setPage(page + 1)}
-            style={styles.flatlistFooter} />
-        }
-        data={comments}
+        ListFooterComponent={() => {
+          if (hasNextPage) {
+            return <ActivityIndicator size="large" color="#0000ff" />
+          } else {
+            return null
+          }
+        }}
+        data={flatlistData}
+        onEndReached={() => {
+          !isFetchingNextPage && fetchNextPage()
+        }}
+        onEndReachedThreshold={0.5}
+        onRefresh={onRefresh}
+        refreshing={false}
         keyExtractor={(item) => item._id.toString()}
         renderItem={({ item }) => (
           <Comment {...item} />
@@ -94,9 +123,9 @@ function Comments() {
         />
         <TouchableOpacity
           onPress={() => {
-            onChangeText(''),
-            postComment({ "post_id": route.params.id, "content": text })
-            }}>
+            mutate({ "post_id": route.params.id, "content": text }),
+              onChangeText('')
+          }}>
           <Text style={styles.postButton}>Post</Text>
         </TouchableOpacity>
       </View>
@@ -186,3 +215,13 @@ const styles = StyleSheet.create({
 });
 
 export default Comments
+//   if (hasNextPage) {
+//     return <Ionicons
+//       name="plus-circle"
+//       size={70} color="lightgray"
+//       onPress={() => setPage(page + 1)}
+//       style={styles.flatlistFooter} />
+//   } else {
+//     return null
+//   }
+// }

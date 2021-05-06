@@ -54,6 +54,9 @@ const StoryList = () => {
 
 const styles = StyleSheet.create({
 	sectionContainer: {
+		// width: 'auto',
+		// height: 110,
+		// backgroundColor: 'white',
 		flexDirection: 'column',
 		alignItems: 'center',
 	},
