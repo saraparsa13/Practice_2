@@ -6,7 +6,7 @@ import * as yup from 'yup'
 import { useMutation } from 'react-query'
 
 import gate from 'gate'
-import TextInput from 'View/components/TextInput'
+import ResigsterInput from 'view/components/RegisterInput.js'
 import Button from 'View/components/Button'
 
 // const phoneNumRegex = /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/
@@ -27,9 +27,9 @@ const PhoneValidationSchema = yup.object().shape({
 
 function Login() {
   const navigation = useNavigation()
-  const { mutate } = useMutation(gate.signIn, {
+  const { mutate, isLoading } = useMutation(gate.signIn, {
     onSuccess: (data) => {
-      console.log( 'login data =>>>>' , data)
+      console.log('login data =>>>>', data)
       const storeToken = tokenHelper.set(data.data.token)
     }
   })
@@ -61,8 +61,8 @@ function Login() {
             <>
               <View style={styles.phonenumContainer}>
                 <View style={styles.sectionPhoneNumContaienr}>
-                  <TextInput
-                    error={errors.phoneNum && touched.phoneNum}
+                  <ResigsterInput
+                    error={touched.phoneNum && errors.phoneNum}
                     value={values.phoneNum}
                     name="phoneNum"
                     style={styles.sectionPhoneNumInput}
@@ -73,9 +73,9 @@ function Login() {
                   />
                 </View>
                 <View>
-                  <TextInput
+                  <ResigsterInput
                     name="password"
-                    error={errors.password && touched.password}
+                    error={touched.password && errors.password}
                     value={values.password}
                     style={styles.sectionPassInput}
                     onChangeText={handleChange('password')}
@@ -89,13 +89,19 @@ function Login() {
                 title='Next'
                 onPress={handleSubmit}
                 disable={isValid}
+                isLoading={isLoading}
               />
             </>
           )}
         </Formik>
       </View>
       <View style={styles.sectionBottom}>
-        <Text style={styles.sectionBottomFont}>Already have an account?</Text>
+        <Text style={styles.sectionBottomFont}>Don't have an account?{'  '}
+          <Text
+            style={[styles.sectionBottomFont, styles.textFontColor]}
+            onPress={() => navigation.navigate('SignUp')}
+          >Sign Up</Text>
+        </Text>
       </View>
     </View>
   )
@@ -166,6 +172,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
   },
+  textFontColor: {
+    color: 'white'
+  }
 })
 
 export default Login

@@ -8,7 +8,7 @@ import { useMutation } from 'react-query'
 import { useNavigation } from '@react-navigation/native'
 
 import gate from 'gate'
-import TextInput from 'View/components/TextInput'
+import RegisterInput from 'View/components/RegisterInput'
 import Button from '../../components/Button';
 
 const CodeValidationSchema = yup.object().shape({
@@ -18,18 +18,6 @@ const CodeValidationSchema = yup.object().shape({
     .max(6, ({ max }) => `Phone number must be ${max} characters`)
     .required('Confirmation Code is Required')
 })
-
-// const verify = async (data) => {
-//   try {
-//     const res = await gate.verify(data)
-//     if (res.status === 'SUCCESS') {
-//       const storeToken = tokenHelper.set(res.data.token)
-//       console.log(storeToken)
-//     }
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
 
 const resend = async (data) => {
   try {
@@ -88,7 +76,7 @@ function VerifyCode() {
             isValid,
           }) => (
             <>
-              <TextInput
+              <RegisterInput
                 name="code"
                 style={styles.veritificationInput}
                 onChangeText={handleChange('code')}
@@ -102,6 +90,7 @@ function VerifyCode() {
                 title='Next'
                 disable={isValid}
                 onPress={handleSubmit}
+                isLoading={isLoading}
               />
             </>
           )}

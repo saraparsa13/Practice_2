@@ -11,9 +11,11 @@ import IgAccount from '../view/pages/igAccount/index'
 import UserProfile from 'view/pages/userProfile/index'
 import Archive from 'view/pages/userProfile/Archive'
 import Comments from '../view/pages/comments';
+import Map from '../view/pages/map';
 
 const Stack = createStackNavigator()
 const StackHome = createStackNavigator()
+const StackActivity = createStackNavigator()
 const BottomTab = createBottomTabNavigator()
 const Drawer = createDrawerNavigator();
 
@@ -43,7 +45,9 @@ function SearchStack() {
 
 function ActivityStack() {
   return (
-    null
+    <StackActivity.Navigator headerMode='none'>
+      <StackActivity.Screen name='Map' component={Map}/>
+    </StackActivity.Navigator>
   )
 }
 
@@ -85,7 +89,7 @@ function UserProfileStack() {
         width: 280,
       }}
       drawerContent={() => <DrawerContent />}>
-      <Drawer.Screen  name="Home" component={UserProfile} />
+      <Drawer.Screen name="Home" component={UserProfile} />
     </Drawer.Navigator>
   );
 }

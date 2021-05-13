@@ -1,13 +1,13 @@
 import React from 'react'
-import { TouchableOpacity, Text, StyleSheet } from 'react-native'
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native'
 
-function Button({ disable, onPress, title }) {
+function Button({ disable, onPress, title, isLoading }) {
   return (
     <TouchableOpacity
       disabled={!disable}
       onPress={onPress}
       style={!disable ? styles.disableButton : styles.enableButton}>
-      <Text style={styles.sectionButtonTxt}>{title}</Text>
+      <Text style={styles.sectionButtonTxt}>{isLoading ? <ActivityIndicator size="large" color="#0000ff" /> : title}</Text>
     </TouchableOpacity>
   )
 }

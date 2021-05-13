@@ -8,7 +8,7 @@ import { useMutation } from 'react-query'
 
 import gate from 'gate'
 import { useApi } from 'helpers/useApi'
-import TextInput from 'View/components/TextInput'
+import RegisterInput from 'View/components/RegisterInput'
 import Button from 'View/components/Button'
 
 import { DATA } from '../DialCode'
@@ -44,11 +44,7 @@ function SignUp() {
   const navigation = useNavigation()
   const [phone, setPhone] = useState('')
 
-  // useEffect(() => {
-  //   console.log(phone)
-  // }, [phone])
-
-  const { mutate } = useMutation(gate.signUp, {
+  const { mutate, isLoading } = useMutation(gate.signUp, {
     onSuccess: (data) => {
       console.log('signup data =>>>>>', data)
       // console.log(data)
@@ -69,25 +65,6 @@ function SignUp() {
     })
     setModalData({ inputText: searchText, filteredData: FILTERED_DATA })
   }
-
-  // useEffect(() => {
-  //   console.log(data)
-  // }, [data])
-
-
-  // const signUp = async (data) => {
-  //   try {
-  //     const res = await gate.signUp(data)
-  //     console.log(res)
-  //     if (res.status === 'SUCCESS') {
-  //       return navigation.navigate('VerifyCode', {
-  //         phoneNumber: data.phone
-  //       })
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   return (
     <View style={styles.sectionContainer}>
@@ -158,7 +135,7 @@ function SignUp() {
                 isValid,
               }) => (
                 <>
-                  <TextInput
+                  <RegisterInput
                     name="email"
                     error={touched.email && errors.email}
                     value={values.email}
@@ -204,7 +181,7 @@ function SignUp() {
                         style={styles.sectionDialCode}>
                         <Text style={styles.sectionDialCodeText}>{dialCode}</Text>
                       </TouchableOpacity>
-                      <TextInput
+                      <RegisterInput
                         error={touched.phoneNum && errors.phoneNum}
                         value={values.phoneNum}
                         name="phoneNum"
@@ -218,7 +195,7 @@ function SignUp() {
                       />
                     </View>
                     <View>
-                      <TextInput
+                      <RegisterInput
                         name="password"
                         error={touched.password && errors.password}
                         value={values.password}
@@ -236,6 +213,7 @@ function SignUp() {
                     title='Next'
                     onPress={handleSubmit}
                     disable={isValid}
+                    isLoading={isLoading}
                   />
                 </>
               )}
@@ -243,9 +221,9 @@ function SignUp() {
         }
       </View>
       <View style={styles.sectionBottom}>
-        <Text style={styles.sectionBottomFont}>Already have an account?{' '}
+        <Text style={styles.sectionBottomFont}>Already have an account?{'  '}
           <Text
-            style={styles.sectionBottomFont}
+            style={[styles.sectionBottomFont, styles.textFontColor]}
             onPress={() => navigation.navigate('Login')}
           >Login</Text>
         </Text>
@@ -451,6 +429,9 @@ const styles = StyleSheet.create({
   phonenumContainer: {
     display: 'flex',
     flexDirection: 'column',
+  },
+  textFontColor: {
+    color: 'white'
   }
 })
 

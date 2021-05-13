@@ -10,6 +10,8 @@ target 'elegant' do
 
   pod 'react-native-viewpager', :path => '../node_modules/@react-native-community/viewpager'
 
+  pod 'react-native-pager-view', :path => '../node_modules/react-native-pager-view'
+
   target 'elegantTests' do
     inherit! :complete
     # Pods for testing
