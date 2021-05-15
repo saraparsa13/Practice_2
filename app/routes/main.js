@@ -98,6 +98,7 @@ function HomeBottomTab() {
   return (
     <BottomTab.Navigator
       headerMode='none'
+      initialRouteName='ActivityStack'
       tabBarOptions={{
         activeTintColor: 'black',
         showIcon: true,
@@ -132,7 +133,7 @@ function HomeBottomTab() {
         component={SearchStack} />
       <BottomTab.Screen
         options={{
-          tabBarLabel: 'Search',
+          tabBarLabel: 'Activity',
           backgroundColor: 'red',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="heart-outline" color={color} size={35} />
