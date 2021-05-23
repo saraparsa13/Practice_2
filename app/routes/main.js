@@ -116,7 +116,7 @@ function HomeBottomTab() {
           tabBarLabel: 'Home',
           backgroundColor: 'red',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home-outline" color={color} size={35} />
+            <MaterialCommunityIcons name="home-outline" color={color} size={28} />
           ),
         }}
         name='HomeStack'
@@ -126,7 +126,7 @@ function HomeBottomTab() {
           tabBarLabel: 'Search',
           backgroundColor: 'red',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="magnify" color={color} size={35} />
+            <MaterialCommunityIcons name="magnify" color={color} size={28} />
           ),
         }}
         name='SearchStack'
@@ -136,7 +136,7 @@ function HomeBottomTab() {
           tabBarLabel: 'Activity',
           backgroundColor: 'red',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="heart-outline" color={color} size={35} />
+            <MaterialCommunityIcons name="heart-outline" color={color} size={28} />
           ),
         }}
         name='ActivityStack'
@@ -146,7 +146,7 @@ function HomeBottomTab() {
           tabBarLabel: 'UserProfile',
           backgroundColor: 'red',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account" color={color} size={35} />
+            <MaterialCommunityIcons name="account" color={color} size={28} />
           ),
         }}
         name='UserProfileStack'
